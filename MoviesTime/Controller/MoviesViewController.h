@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  MoviesViewController.h
 //  MoviesTime
 //
 //  Created by Diego Bartra on 10/27/16.
@@ -7,9 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TableViewController.h"
 
-@interface ViewController : UIViewController
-
+@interface MoviesViewController : TableViewController
 
 @end
-

@@ -7,45 +7,59 @@
 //
 
 #import "AppDelegate.h"
+#import "ServerConfiguration.h"
+#import "GenreStore.h"
+#import "DataLoadingManager.h"
+#import "UIViewController+MovieContent.h"
+#import "EmptyViewController.h"
 
-@interface AppDelegate ()
+@interface AppDelegate () <UISplitViewControllerDelegate>
+
+@property (nonatomic, strong) dispatch_queue_t queue;
 
 @end
 
 @implementation AppDelegate
 
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+- (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    ServerConfiguration *config = [ServerConfiguration defaultConfiguration];
+    GenreStore *genres = [GenreStore sharedStore];
+    [[DataLoadingManager sharedManager] subscribeObject:config];
+    [[DataLoadingManager sharedManager] subscribeObject:genres];
+    [config fetch];
+    [genres fetchGenres];
+    
     return YES;
 }
 
-
-- (void)applicationWillResignActive:(UIApplication *)application {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
+    splitViewController.preferredDisplayMode = UISplitViewControllerDisplayModeAllVisible;
+    splitViewController.delegate = self;
+    
+    return YES;
 }
 
+#pragma mark - Split view controller delegate
 
-- (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+- (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
+    
+    if (![secondaryViewController _containsMovie]) {
+        return YES;
+    }
+    
+    return NO;
 }
 
+- (UIViewController *)splitViewController:(UISplitViewController *)splitViewController separateSecondaryViewControllerFromPrimaryViewController:(UIViewController *)primaryViewController {
 
-- (void)applicationWillEnterForeground:(UIApplication *)application {
-    // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+    if ([primaryViewController _containsMovie]) {
+        return nil;
+    }
+    
+    return [[UINavigationController alloc] initWithRootViewController:[[EmptyViewController alloc] init]];
 }
-
-
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-}
-
-
-- (void)applicationWillTerminate:(UIApplication *)application {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-}
-
 
 @end

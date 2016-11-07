@@ -8,7 +8,7 @@ Nice iOS application for cinephiles and movie hobbyists
 
 ## Third-Party Libraries
 
-- SDWebImage: Used because it provides a very elegant and simple async image downloader with cache support and a convenience category for UIImageView. It downloads the poster and backdrop images for the movies.
+- SDWebImage: used because it provides a very elegant and simple async image downloader with cache support and a convenience category for UIImageView. It downloads the poster and backdrop images for the movies.
 
 ## Requirements
 

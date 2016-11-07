@@ -36,7 +36,7 @@ At this point your workspace should build without error.
 
 ## Author
 
-- Diego Bartra
-- diegobartra@me.com
+Diego Bartra <br />
+diegobartra@me.com
 
 
